@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Calendrier - Téléverser un Gif</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Téléverser un Gif</h1>
+<form th:action="@{/uploadGif}" method="post" enctype="multipart/form-data">
+    <label for="file">Fichier Gif :</label>
+    <input type="file" id="file" name="file" accept=".gif" required>
+    <br>
+    <label for="legend">Légende :</label>
+    <input type="text" id="legend" name="legend">
+    <br>
+    <label for="date">Date :</label>
+    <input type="date" id="date" name="date" required>
+    <br>
+    <button type="submit">Téléverser</button>
+</form>
+</body>
+</html>

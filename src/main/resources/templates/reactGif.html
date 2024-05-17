@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Calendrier - Réagir à un Gif</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Réagir à un Gif</h1>
+<form th:action="@{/reactGif}" method="post">
+    <label for="reaction">Réaction :</label>
+    <select id="reaction" name="reaction" required>
+        <option value="">Choisissez une réaction</option>
+        <option value="Souriant">😊 Souriant</option>
+        <option value="Monocle">🧐 Monocle</option>
+        <option value="Triste">😢 Triste</option>
+        <option value="En colère">😠 En colère</option>
+        <option value="Surpris">😮 Surpris</option>
+    </select>
+    <br>
+    <button type="submit">Réagir</button>
+</form>
+</body>
+</html>

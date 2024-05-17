@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Calendrier - Mois</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Calendrier</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Date</th>
+        <th>Gif</th>
+        <th>Légende</th>
+        <th>Réactions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="jour : ${jours}">
+        <td th:text="${jour.date}">Date</td>
+        <td><img th:src="${jour.gif.url}" th:alt="${jour.gif.legend}"></td>
+        <td th:text="${jour.gif.legend}">Légende</td>
+        <td th:text="${jour.reactions}">Réactions</td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <button th:onclick="|window.location.href='?page=${page - 1}'|">Précédent</button>
+    <button th:onclick="|window.location.href='?page=${page + 1}'|">Suivant</button>
+</div>
+</body>
+</html>
