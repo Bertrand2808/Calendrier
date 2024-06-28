@@ -1,59 +1,51 @@
 package fr.esgi.calendrier_APP_BR.controller;
 
-import fr.esgi.calendrier_APP_BR.business.Utilisateur;
-import fr.esgi.calendrier_APP_BR.repository.UtilisateurRepository;
+import fr.esgi.calendrier_APP_BR.dto.UtilisateurDto;
+import fr.esgi.calendrier_APP_BR.mapper.UtilisateurMapper;
+import fr.esgi.calendrier_APP_BR.service.JourCalendrierService;
+import fr.esgi.calendrier_APP_BR.service.UtilisateurService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 @Api(tags = "Utilisateur")
-@RestController
-@RequestMapping("/api/utilisateur")
+@Controller
+@AllArgsConstructor
 public class UtilisateurController {
-    @Autowired
-    private UtilisateurRepository utilisateurRepository;
 
-    @ApiOperation(value = "Récupère tous les utilisateurs")
-    @GetMapping
-    public List<Utilisateur> findAll() {
-        return utilisateurRepository.findAll();
+    private final UtilisateurService utilisateurService;
+    private final UtilisateurMapper utilisateurMapper;
+    private final JourCalendrierService jourCalendrierService;
+
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        UtilisateurDto utilisateurDto = new UtilisateurDto();
+        model.addAttribute("utilisateur", utilisateurDto);
+        return "register";
     }
 
-    @ApiOperation(value = "Récupère un utilisateur par son id")
-    @GetMapping({"/{id}"})
-    public Utilisateur findById(@PathVariable Long id) {
-        return utilisateurRepository.getById(id);
+    @PostMapping("/register")
+    public String registration(UtilisateurDto utilisateurDto, Model model) {
+        utilisateurService.save(utilisateurMapper.toEntity(utilisateurDto));
+        return "redirect:/register?success";
     }
 
-    @ApiOperation(value = "Crée un utilisateur")
-    @PostMapping
-    public Utilisateur creeUtilisateur(@RequestBody Utilisateur utilisateur) {
-        return utilisateurRepository.save(utilisateur);
+    @GetMapping("/login")
+    public String login() {
+        return "login";
     }
 
-    @ApiOperation(value = "Modifie un utilisateur")
-    @PutMapping({"/{id}"})
-    public Utilisateur modifierUtilisateur(@PathVariable Long id, @RequestBody Utilisateur utilisateurDetails) {
-        Optional<Utilisateur> optionalUtilisateur = utilisateurRepository.findById(id);
-        if (optionalUtilisateur.isPresent()) {
-            Utilisateur utilisateur = optionalUtilisateur.get();
-            utilisateur.setNom(utilisateurDetails.getNom());
-            utilisateur.setPrenom(utilisateurDetails.getPrenom());
-            utilisateur.setEmail(utilisateurDetails.getEmail());
-            utilisateur.setMotDePasse(utilisateurDetails.getMotDePasse());
-            utilisateur.setSoldePoints(utilisateurDetails.getSoldePoints());
-            return utilisateurRepository.save(utilisateur);
-        }
-        return null;
-    }
+    @GetMapping("/")
+    public String home(
+            Model model,
+            @PageableDefault(size = 7) Pageable pageable
+    ) {
+        model.addAttribute("jours", jourCalendrierService.findAll(pageable));
 
-    @ApiOperation(value = "Supprime un utilisateur")
-    @DeleteMapping({"/{id}"})
-    public void supprimerUtilisateur(@PathVariable Long id) {
-        utilisateurRepository.deleteById(id);
+        return "index";
     }
 }

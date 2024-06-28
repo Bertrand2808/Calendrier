@@ -7,11 +7,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,52 +26,42 @@ public class UtilisateurServiceImplTest {
     private UtilisateurServiceImpl utilisateurService;
 
     @Test
-    public void getByIdTest() {
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setId(1L);
-        when(utilisateurRepository.findById(1L)).thenReturn(Optional.of(utilisateur));
-
-        Utilisateur result = utilisateurService.getById(1L);
-
-        assertEquals(utilisateur, result);
-    }
-
-    @Test
-    public void getByIdNotFoundTest() {
-        when(utilisateurRepository.findById(1L)).thenReturn(Optional.empty());
-
-        Utilisateur result = utilisateurService.getById(1L);
-
-        assertNull(result);
-    }
-
-    @Test
-    public void getByEmailTest() {
+    public void loadUserByUsername() {
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setEmail("test@test.com");
-        when(utilisateurRepository.findByEmail("test@test.com")).thenReturn(Optional.of(utilisateur));
+        when(utilisateurRepository.findByEmail("test@test.com")).thenReturn(utilisateur);
 
-        Utilisateur result = utilisateurService.getByEmail("test@test.com");
+        UserDetails result = utilisateurService.loadUserByUsername("test@test.com");
 
         assertEquals(utilisateur, result);
     }
 
     @Test
-    public void getByEmailNotFoundTest() {
-        when(utilisateurRepository.findByEmail("test@test.com")).thenReturn(Optional.empty());
+    public void loadUserByUsername_NotFound() {
+        when(utilisateurRepository.findByEmail("test@test.com")).thenReturn(null);
 
-        Utilisateur result = utilisateurService.getByEmail("test@test.com");
-
-        assertNull(result);
+        assertThrows(UsernameNotFoundException.class, () -> utilisateurService.loadUserByUsername("test@test.com"));
     }
 
     @Test
-    public void saveTest() {
+    public void save() {
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setId(1L);
+        utilisateur.setMotDePasse("password"); // Set a password
         when(utilisateurRepository.save(utilisateur)).thenReturn(utilisateur);
 
-        Utilisateur result = utilisateurService.save(utilisateur);
+        utilisateurService.save(utilisateur);
+
+        assertEquals(500, utilisateur.getSoldePoints());
+    }
+
+    @Test
+    public void getByEmail() {
+        Utilisateur utilisateur = new Utilisateur();
+        utilisateur.setEmail("test@test.com");
+        when(utilisateurRepository.findByEmail("test@test.com")).thenReturn(utilisateur);
+
+        Utilisateur result = utilisateurService.findByEmail("test@test.com");
 
         assertEquals(utilisateur, result);
     }

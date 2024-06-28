@@ -1,38 +1,79 @@
 package fr.esgi.calendrier_APP_BR.business;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-@Data
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 @Entity
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Setter
-@Getter
-@EqualsAndHashCode
-@ToString
-public class Utilisateur {
+@AllArgsConstructor
+public class Utilisateur implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @NotBlank
-    private String nom;
+    protected String nom;
 
     @NotBlank
-    private String prenom;
+    protected String prenom;
 
     @Email
+    @NotNull
     @Pattern(regexp=".+@esgi\\.fr", message="L'email doit appartenir au domaine esgi.fr")
-    private String email;
+    @Column(name = "email", unique = true)
+    protected String email;
 
     @NotBlank
     @Size(min = 3, message = "Le mot de passe doit contenir au moins 3 caractères")
-    private String motDePasse;
+    protected String motDePasse;
 
-    private int soldePoints;
+    protected int soldePoints;
+
+    protected String theme;
+
+    @OneToMany(mappedBy = "utilisateur")
+    private List<JourCalendrier> jours = new ArrayList<>();
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return this.motDePasse;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

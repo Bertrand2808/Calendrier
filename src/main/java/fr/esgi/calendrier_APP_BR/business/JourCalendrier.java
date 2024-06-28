@@ -1,32 +1,48 @@
 package fr.esgi.calendrier_APP_BR.business;
 
+import fr.esgi.calendrier_APP_BR.business.customId.JourCalendrierId;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
-@Data
 @Entity
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Setter
-@Getter
-@EqualsAndHashCode
-@ToString
+@AllArgsConstructor
 public class JourCalendrier {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private JourCalendrierId id;
 
-    @Temporal(TemporalType.DATE)
-    private Date date;
+    public String date() {
+        String jour = String.valueOf(id.getJour());
+        String mois = String.valueOf(id.getMois());
 
-    @OneToMany(mappedBy = "jour")
-    private List<Gif> gifs;
+        if (jour.length() == 1) {
+            jour = "0" + jour;
+        }
+        if (mois.length() == 1) {
+            mois = "0" + mois;
+        }
 
-    public JourCalendrier(LocalDate localDate) {
-        this.date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return jour + "/" + mois;
     }
+
+    @OneToOne()
+    @Nullable()
+    private Gif gif;
+
+    @ManyToOne()
+    @Nullable()
+    private Utilisateur utilisateur;
+
+    @OneToMany()
+    @JoinColumns({
+            @JoinColumn(name = "jour", referencedColumnName = "jour"),
+            @JoinColumn(name = "mois", referencedColumnName = "mois")
+    })
+    private List<Reaction> reactions = new ArrayList<>();
+
+    private int points;
 }

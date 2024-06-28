@@ -1,56 +1,56 @@
 package fr.esgi.calendrier_APP_BR.controller;
 
 import fr.esgi.calendrier_APP_BR.business.Gif;
-import fr.esgi.calendrier_APP_BR.repository.GifRepository;
+import fr.esgi.calendrier_APP_BR.business.Utilisateur;
+import fr.esgi.calendrier_APP_BR.business.customId.JourCalendrierId;
+import fr.esgi.calendrier_APP_BR.service.GifService;
+import fr.esgi.calendrier_APP_BR.service.JourCalendrierService;
+import fr.esgi.calendrier_APP_BR.service.UtilisateurService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @Api(tags = "Gif")
-@RestController
-@RequestMapping("/api/gif")
+@Controller
+@AllArgsConstructor
 public class GifController {
 
-    @Autowired
-    private GifRepository gifRepository;
+    private JourCalendrierService jourCalendrierService;
+    private GifService gifService;
+    private UtilisateurService utilisateurService;
+    @GetMapping("gif/save/form/{jour}/{mois}")
+    public String gifDistant(
+            Model model,
+            @PathVariable(value = "jour") String jour,
+            @PathVariable(value = "mois") String mois
+    ) {
+        JourCalendrierId jourCalendrierId = new JourCalendrierId(Integer.parseInt(jour), Integer.parseInt(mois));
 
-    @ApiOperation(value = "Récupère la liste des gifs")
-    @GetMapping
-    public List<Gif> recupererGifs() {
-        return gifRepository.findAll();
+        model.addAttribute("jour", jourCalendrierService.findById(jourCalendrierId));
+
+        return "uploadGif";
     }
 
-    @ApiOperation(value = "Récupère un gif par son id")
-    @GetMapping("/{id}")
-    public Gif getGifById(@PathVariable Long id) {
-        return gifRepository.findById(id).orElse(null);
-    }
+    @PostMapping("gif/save/form/{jour}/{mois}")
+    public String addGif(
+            String url,
+            @PathVariable(value = "jour") String jour,
+            @PathVariable(value = "mois") String mois,
+            @AuthenticationPrincipal Utilisateur utilisateur
+            ) {
+        Gif gif = new Gif();
+        gif.setUrl(url);
+        gifService.save(gif);
 
-    @ApiOperation(value = "Crée un gif")
-    @PostMapping
-    public Gif creerGif(Gif gif) {
-        return gifRepository.save(gif);
-    }
+        JourCalendrierId jourCalendrierId = new JourCalendrierId(Integer.parseInt(jour), Integer.parseInt(mois));
+        jourCalendrierService.setGif(jourCalendrierId, gif);
+        Utilisateur managedUtilisateur = utilisateurService.findById(utilisateur.getId()).orElseThrow(() -> new RuntimeException("User not found"));
 
-    @ApiOperation(value = "Supprime un gif")
-    @PostMapping("/delete")
-    public void supprimerGif(Long id) {
-        gifRepository.deleteById(id);
-    }
+        jourCalendrierService.setUtilisateur(jourCalendrierId, managedUtilisateur);
 
-    @ApiOperation(value = "Met à jour un gif par son id")
-    @PutMapping("/{id}")
-    public Gif updateGif(@PathVariable Long id, @RequestBody Gif gifDetails) {
-        Gif gif = gifRepository.findById(id).orElse(null);
-        if (gif != null) {
-            gif.setUrl(gifDetails.getUrl());
-            gif.setJour(gifDetails.getJour());
-            gif.setUtilisateur(gifDetails.getUtilisateur());
-            return gifRepository.save(gif);
-        }
-        return null;
+        return "redirect:/";
     }
 }

@@ -6,40 +6,45 @@ import fr.esgi.calendrier_APP_BR.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class UtilisateurServiceImpl implements UtilisateurService {
 
-    private final UtilisateurRepository utilisateurRepository;
-
     @Autowired
-    public UtilisateurServiceImpl(UtilisateurRepository utilisateurRepository) {
-        this.utilisateurRepository = utilisateurRepository;
-    }
-
-    @Override
-    public Utilisateur getById(Long id) {
-        return utilisateurRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Utilisateur getByEmail(String email) {
-        return utilisateurRepository.findByEmail(email).orElse(null);
-    }
-
-    @Override
-    public Utilisateur save(Utilisateur utilisateur) {
-        return utilisateurRepository.save(utilisateur);
-    }
+    private UtilisateurRepository utilisateurRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Utilisateur utilisateur = utilisateurRepository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Utilisateur non trouvé: " + username));
-        return new org.springframework.security.core.userdetails.User(utilisateur.getEmail(), utilisateur.getMotDePasse(), new ArrayList<>());
+        Utilisateur utilisateur = utilisateurRepository.findByEmail(username);
+
+        if (utilisateur == null) {
+            throw new UsernameNotFoundException("Utilisateur non trouvé");
+        }
+
+        return utilisateur;
+    }
+
+    @Override
+    public void save(Utilisateur utilisateur) {
+        utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
+        utilisateur.setSoldePoints(500);
+
+        this.utilisateurRepository.save(utilisateur);
+    }
+
+    @Override
+    public Utilisateur findByEmail(String email) {
+        return this.utilisateurRepository.findByEmail(email);
+    }
+
+    public Optional<Utilisateur> findById(Long id) {
+        return utilisateurRepository.findById(id);
     }
 }

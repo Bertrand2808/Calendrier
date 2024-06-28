@@ -11,6 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,14 +25,23 @@ public class GifServiceImplTest {
     private GifServiceImpl gifService;
 
     @Test
-    public void getByIdTest() {
+    public void findByIdTest() {
         Gif gif = new Gif();
         gif.setId(1L);
         when(gifRepository.findById(1L)).thenReturn(Optional.of(gif));
 
-        Gif result = gifService.getById(1L);
+        Gif result = gifService.findById(1L);
 
         assertEquals(gif, result);
+    }
+
+    @Test
+    public void findByIdNotFoundTest() {
+        when(gifRepository.findById(1L)).thenReturn(Optional.empty());
+
+        Gif result = gifService.findById(1L);
+
+        assertNull(result);
     }
 
     @Test
@@ -39,8 +50,8 @@ public class GifServiceImplTest {
         gif.setId(1L);
         when(gifRepository.save(gif)).thenReturn(gif);
 
-        Gif result = gifService.save(gif);
+        gifService.save(gif);
 
-        assertEquals(gif, result);
+        verify(gifRepository).save(gif);
     }
 }

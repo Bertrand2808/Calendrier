@@ -5,29 +5,19 @@ import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import jakarta.validation.constraints.*;
 
-@Data
 @Entity
-@AllArgsConstructor
+@Data
 @NoArgsConstructor
-@Setter
-@Getter
-@EqualsAndHashCode
-@ToString
+@AllArgsConstructor
 public class Gif {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "utilisateur_id")
-    private Utilisateur utilisateur;
-
-    @ManyToOne
-    @JoinColumn(name = "jour_id")
-    private JourCalendrier jour;
-
-    @NotBlank
-    @URL(regexp = "(https?|ftp)://.*\\.(gif|GIF)")
+    @Pattern(regexp = "^.+\\.(?i)(gif)$", message = "L'URL doit se terminer par .gif, .Gif ou .GIF")
     private String url;
+
+    @ManyToOne
+    private Utilisateur utilisateur;
 }
 
