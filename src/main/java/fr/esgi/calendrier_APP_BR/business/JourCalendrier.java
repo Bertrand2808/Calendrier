@@ -29,6 +29,13 @@ public class JourCalendrier {
         return jour + "/" + mois;
     }
 
+    public static JourCalendrierId fromDate(String date) {
+        String[] parts = date.split("/");
+        int jour = Integer.parseInt(parts[0]);
+        int mois = Integer.parseInt(parts[1]);
+        return new JourCalendrierId(jour, mois);
+    }
+
     @OneToOne()
     @Nullable()
     private Gif gif;
@@ -37,11 +44,7 @@ public class JourCalendrier {
     @Nullable()
     private Utilisateur utilisateur;
 
-    @OneToMany()
-    @JoinColumns({
-            @JoinColumn(name = "jour", referencedColumnName = "jour"),
-            @JoinColumn(name = "mois", referencedColumnName = "mois")
-    })
+    @OneToMany(mappedBy = "jourCalendrier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reaction> reactions = new ArrayList<>();
 
     private int points;

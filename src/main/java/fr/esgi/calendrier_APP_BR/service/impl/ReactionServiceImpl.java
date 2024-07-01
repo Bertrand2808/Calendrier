@@ -1,11 +1,15 @@
 package fr.esgi.calendrier_APP_BR.service.impl;
 
 import fr.esgi.calendrier_APP_BR.business.Reaction;
+import fr.esgi.calendrier_APP_BR.business.ReactionJour;
+import fr.esgi.calendrier_APP_BR.business.customId.JourCalendrierId;
 import fr.esgi.calendrier_APP_BR.repository.ReactionRepository;
 import fr.esgi.calendrier_APP_BR.service.ReactionService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -21,5 +25,10 @@ public class ReactionServiceImpl implements ReactionService {
     @Override
     public Reaction findById(Long id) {
         return this.reactionRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Reaction findByUnicode(String unicode) {
+        return this.reactionRepository.findByUnicode(unicode).orElse(null);
     }
 }

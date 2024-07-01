@@ -8,5 +8,5 @@ import java.util.Optional;
 public interface UtilisateurService extends UserDetailsService {
     public Utilisateur findByEmail(String email);
     public void save(Utilisateur utilisateur);
-    public Optional<Utilisateur> findById(Long id);
+    public Utilisateur findById(Long id);
 }

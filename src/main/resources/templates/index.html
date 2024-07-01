@@ -59,22 +59,65 @@
             background-color: #007bff;
             border-color: #007bff;
         }
+        .reaction-count {
+            position: relative;
+            display: inline-block;
+        }
+        .reaction-count span {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #f1f1f1;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            display: none;
+        }
+        .reaction-count:hover span {
+            display: block;
+        }
     </style>
     <script>
-        async function addReaction(jour, mois, emoji) {
-            const formData = new FormData();
-            formData.append('jour', jour);
-            formData.append('mois', mois);
-            formData.append('emoji', emoji);
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".reaction-btn").forEach(function(button) {
+                button.addEventListener("click", function() {
+                    const date = this.dataset.date;
+                    const emoji = this.dataset.emoji;
+                    const utilisateurId = this.dataset.utilisateurId;
+                    addReaction(date, emoji, utilisateurId);
+                });
+            });
+        });
 
-            await fetch('/reaction/add', {
+        async function addReaction(date, emoji, utilisateurId) {
+            const formData = new FormData();
+            formData.append('date', date);
+            formData.append('emoji', emoji);
+            formData.append('utilisateurId', utilisateurId);
+            console.log('Adding reaction', date, emoji, utilisateurId);
+
+            const addResponse = await fetch('/reaction/add', {
                 method: 'POST',
                 body: formData
             });
 
-            const response = await fetch(`/reaction/count?jour=${jour}&mois=${mois}&emoji=${encodeURIComponent(emoji)}`);
-            const count = await response.text();
-            document.getElementById(`count-${jour}-${mois}-${emoji}`).innerText = count;
+            if (addResponse.ok) {
+                const response = await fetch(`/reaction/list?date=${date}`);
+                if (response.ok) {
+                    const reactions = await response.json();
+                    console.log('Fetched reactions', reactions); // Added console log
+                    const reactionsElement = document.getElementById(`reactions-${date}`);
+                    console.log('Reactions element', reactionsElement); // Added console log
+                    if (reactionsElement) {
+                        reactionsElement.innerHTML = reactions.map(r => `<span>${r}</span><br>`).join('');
+                    }
+                } else {
+                    console.error('Failed to fetch reactions list');
+                }
+            } else {
+                console.error('Failed to add reaction');
+            }
         }
     </script>
 </head>
@@ -83,7 +126,7 @@
     <div class="text-center">
         <h3 class="card-title">📅 Calendrier</h3>
         <div class="user-info">
-            👤 Utilisateur : <span th:text="${#authentication.principal.nom}"></span>
+            👤 Utilisateur : <span th:text="${#authentication.principal.nom + ', ' + #authentication.principal.prenom}"></span>
             - solde : <span th:text="${#authentication.principal.soldePoints}"></span> points
             <a class="btn btn-link" th:href="@{/logout}">Se déconnecter</a>
         </div>
@@ -102,7 +145,7 @@
             </thead>
             <tbody>
             <tr th:each="jour : ${jours}">
-                <th scope="row" th:text="${jour.date}"></th>
+                <th scope="row" th:text="${jour.date()}"></th>
                 <td>
                     <div th:if="${jour.gif != null}">
                         <img alt="gif" height="100" th:src="${jour.gif.url}" width="100">
@@ -110,27 +153,29 @@
                     <div class="d-flex flex-column" th:unless="${jour.gif != null}">
                         <span th:text="${jour.points} + ' points'"></span>
                         <div>
-                            <a class="btn btn-link pe-1" th:href="@{'/gif/save/form/' + ${jour.date}}">Ajouter un gif distant</a>
-                            <a class="btn btn-link ps-1" th:href="@{'/form/gif-local/' + ${jour.date}}">Ajouter un gif local</a>
+                            <a class="btn btn-link pe-1" th:href="@{'/gif/save/form/' + ${jour.date()} }">Ajouter un gif distant</a>
+                            <a class="btn btn-link ps-1" th:href="@{'/form/gif-local/' + ${jour.date()} }">Ajouter un gif local</a>
                         </div>
                     </div>
                 </td>
                 <td>
                     <span th:if="${jour.utilisateur != null}" th:text="${jour.utilisateur.nom + ', ' + jour.utilisateur.prenom}"></span>
                 </td>
-                <td>
+                <td th:id="'reactions-' + ${jour.date()}">
                     <div th:each="reaction : ${jour.reactions}">
-                        <span th:text="${reaction.reaction.unicode}"></span>
-                        <span th:text="${reaction.utilisateur.nom}"></span>
-                        <br>
+                        <span th:text="${reaction.emoji + ': ' + reaction.utilisateur.prenom + ' ' + reaction.utilisateur.nom}"></span><br>
                     </div>
                 </td>
                 <td>
                     <div>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="addReaction(${jour.date}, ${jour.date.getMonthValue()}, '😍')">😍 <span id="count-${jour.date}-${jour.date.getMonthValue()}-😍"></span></button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="addReaction(${jour.date}, ${jour.date.getMonthValue()}, '😎')">😎 <span id="count-${jour.date}-${jour.date.getMonthValue()}-😎"></span></button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="addReaction(${jour.date}, ${jour.date.getMonthValue()}, '😡')">😡 <span id="count-${jour.date}-${jour.date.getMonthValue()}-😡"></span></button>
-                        <button class="btn btn-sm btn-outline-secondary" onclick="addReaction(${jour.date}, ${jour.date.getMonthValue()}, '😭')">😭 <span id="count-${jour.date}-${jour.date.getMonthValue()}-😭"></span></button>
+                        <button class="btn btn-sm btn-outline-secondary reaction-btn"
+                                th:data-date="${jour.date()}" data-emoji="😍" th:data-utilisateur-id="${#authentication.principal.id}">😍</button>
+                        <button class="btn btn-sm btn-outline-secondary reaction-btn"
+                                th:data-date="${jour.date()}" data-emoji="😎" th:data-utilisateur-id="${#authentication.principal.id}">😎</button>
+                        <button class="btn btn-sm btn-outline-secondary reaction-btn"
+                                th:data-date="${jour.date()}" data-emoji="😡" th:data-utilisateur-id="${#authentication.principal.id}">😡</button>
+                        <button class="btn btn-sm btn-outline-secondary reaction-btn"
+                                th:data-date="${jour.date()}" data-emoji="😭" th:data-utilisateur-id="${#authentication.principal.id}">😭</button>
                     </div>
                 </td>
             </tr>
@@ -148,7 +193,7 @@
                     <a class="page-link" th:href="@{'?page=' + ${jours.getNumber()+1} }">Page suivante</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" th:href="@{'?page=' + ${jours.getTotalPages() -1 }}">Dernière page</a>
+                    <a class="page-link" th:href="@{'?page=' + ${jours.getTotalPages() -1} }">Dernière page</a>
                 </li>
             </ul>
         </nav>

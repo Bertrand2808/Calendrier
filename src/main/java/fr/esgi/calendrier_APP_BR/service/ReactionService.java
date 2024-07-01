@@ -6,4 +6,5 @@ public interface ReactionService {
     public void save(Reaction emotion);
 
     public Reaction findById(Long id);
+    public Reaction findByUnicode(String unicode);
 }

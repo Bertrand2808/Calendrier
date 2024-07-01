@@ -18,6 +18,10 @@ public class Reaction {
     private Utilisateur utilisateur;
 
     @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "jour", referencedColumnName = "jour"),
+            @JoinColumn(name = "mois", referencedColumnName = "mois")
+    })
     private JourCalendrier jourCalendrier;
 
 }

@@ -47,7 +47,7 @@ public class GifController {
 
         JourCalendrierId jourCalendrierId = new JourCalendrierId(Integer.parseInt(jour), Integer.parseInt(mois));
         jourCalendrierService.setGif(jourCalendrierId, gif);
-        Utilisateur managedUtilisateur = utilisateurService.findById(utilisateur.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        Utilisateur managedUtilisateur = utilisateurService.findById(utilisateur.getId());
 
         jourCalendrierService.setUtilisateur(jourCalendrierId, managedUtilisateur);
 

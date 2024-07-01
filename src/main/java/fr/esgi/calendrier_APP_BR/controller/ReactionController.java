@@ -1,55 +1,75 @@
 package fr.esgi.calendrier_APP_BR.controller;
 
+import fr.esgi.calendrier_APP_BR.business.JourCalendrier;
 import fr.esgi.calendrier_APP_BR.business.Reaction;
 import fr.esgi.calendrier_APP_BR.business.Utilisateur;
 import fr.esgi.calendrier_APP_BR.business.customId.JourCalendrierId;
-import fr.esgi.calendrier_APP_BR.service.ReactionService;
-import fr.esgi.calendrier_APP_BR.service.JourCalendrierService;
-import fr.esgi.calendrier_APP_BR.service.UtilisateurService;
-import fr.esgi.calendrier_APP_BR.service.ReactionJourService;
-import lombok.AllArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
+import fr.esgi.calendrier_APP_BR.repository.JourCalendrierRepository;
+import fr.esgi.calendrier_APP_BR.repository.ReactionRepository;
+import fr.esgi.calendrier_APP_BR.repository.UtilisateurRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@AllArgsConstructor
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@RestController
 @RequestMapping("/reaction")
 public class ReactionController {
 
-    private final ReactionService reactionService;
-    private final JourCalendrierService jourCalendrierService;
-    private final UtilisateurService utilisateurService;
-    private final ReactionJourService reactionJourService;
+    @Autowired
+    private JourCalendrierRepository jourCalendrierRepository;
+
+    @Autowired
+    private ReactionRepository reactionRepository;
+
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
 
     @PostMapping("/add")
-    public String addReaction(
-            @RequestParam("jour") int jour,
-            @RequestParam("mois") int mois,
-            @RequestParam("emoji") String emoji,
-            @AuthenticationPrincipal UserDetails userDetails
-    ) {
-        Reaction reaction = new Reaction();
-        reaction.setUnicode(emoji);
-        reactionService.save(reaction);
+    public ResponseEntity<?> addReaction(@RequestParam String date, @RequestParam String emoji, @RequestParam Long utilisateurId) {
+        JourCalendrierId id = JourCalendrier.fromDate(date);
+        Optional<JourCalendrier> optionalJourCalendrier = jourCalendrierRepository.findById(id);
+        Optional<Utilisateur> optionalUtilisateur = utilisateurRepository.findById(utilisateurId);
 
-        JourCalendrierId jourCalendrierId = new JourCalendrierId(jour, mois);
-        Utilisateur utilisateur = utilisateurService.findByEmail(userDetails.getUsername());
+        if (optionalJourCalendrier.isPresent() && optionalUtilisateur.isPresent()) {
+            JourCalendrier jourCalendrier = optionalJourCalendrier.get();
+            Utilisateur utilisateur = optionalUtilisateur.get();
 
-        reactionJourService.addReactionJour(jourCalendrierId, reaction, utilisateur);
+            Reaction reaction = new Reaction();
+            reaction.setUnicode(emoji);
+            reaction.setUtilisateur(utilisateur);
+            reaction.setJourCalendrier(jourCalendrier);
 
-        return "redirect:/";
+            reactionRepository.save(reaction);
+
+            System.out.println("Added reaction: " + emoji + " by user " + utilisateurId + " on date " + date);
+
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-    @GetMapping("/count")
-    @ResponseBody
-    public int countReactions(
-            @RequestParam("jour") int jour,
-            @RequestParam("mois") int mois,
-            @RequestParam("emoji") String emoji
-    ) {
-        JourCalendrierId jourCalendrierId = new JourCalendrierId(jour, mois);
-        return reactionJourService.countReactions(jourCalendrierId, emoji);
+    @GetMapping("/list")
+    public ResponseEntity<List<String>> listReactions(@RequestParam String date) {
+        JourCalendrierId id = JourCalendrier.fromDate(date);
+        Optional<JourCalendrier> optionalJourCalendrier = jourCalendrierRepository.findById(id);
+
+        if (optionalJourCalendrier.isPresent()) {
+            JourCalendrier jourCalendrier = optionalJourCalendrier.get();
+            List<String> reactions = reactionRepository.findByJourCalendrier(jourCalendrier).stream()
+                    .map(reaction -> reaction.getUnicode() + ": " + reaction.getUtilisateur().getPrenom() + " " + reaction.getUtilisateur().getNom())
+                    .collect(Collectors.toList());
+
+            System.out.println("Fetched reactions for date " + date + ": " + reactions);
+
+            return ResponseEntity.ok(reactions);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

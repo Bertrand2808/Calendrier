@@ -44,7 +44,7 @@ public class UtilisateurServiceImpl implements UtilisateurService {
         return this.utilisateurRepository.findByEmail(email);
     }
 
-    public Optional<Utilisateur> findById(Long id) {
-        return utilisateurRepository.findById(id);
+    public Utilisateur findById(Long id) {
+        return utilisateurRepository.findById(id).orElse(null);
     }
 }

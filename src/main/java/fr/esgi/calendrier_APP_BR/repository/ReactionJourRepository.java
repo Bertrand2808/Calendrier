@@ -6,5 +6,6 @@ import fr.esgi.calendrier_APP_BR.business.customId.ReactionJourId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ReactionJourRepository extends JpaRepository<ReactionJour, ReactionJourId>{
-    public int countByIdJourCalendrierIdAndReactionUnicode(JourCalendrierId jourCalendrierId, String emoji);
+    public int countByIdJourCalendrierIdAndReactionUnicode(JourCalendrierId jourCalendrierId, String unicode);
+
 }
