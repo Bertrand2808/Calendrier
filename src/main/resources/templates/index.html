@@ -9,8 +9,11 @@
     <link rel="icon" sizes="32x32" th:href="@{/favicon/favicon-32x32.png}" type="image/png">
     <link rel="icon" sizes="16x16" th:href="@{/favicon/favicon-16x16.png}" type="image/png">
     <style>
+        html.dark-mode, body.dark-mode {
+            background-color: rgba(18, 18, 18, 0.6);
+            color: #ffffff;
+        }
         body {
-            background: linear-gradient(135deg, #ece9e6, #ffffff);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -18,12 +21,12 @@
             align-items: center;
             padding: 20px;
         }
-        .container {
+        .container-xl {
             background: #fff;
             border-radius: 12px;
             padding: 30px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            max-width: 900px;
+            max-width: 1400px;
             width: 100%;
             margin-bottom: 20px;
         }
@@ -62,8 +65,26 @@
             display: block;
         }
     </style>
-    <script>
+    <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
+            const userTheme = /*[[${#authentication.principal.theme}]]*/ 'default';
+            console.log('User theme', userTheme);
+            if (userTheme === 'dark') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                document.body.classList.add('bg-dark', 'text-light');
+                document.querySelector('.container-xl').classList.add('bg-dark', 'text-light', 'border', 'border-light');
+                document.querySelectorAll('.card-title, .user-info').forEach(element => element.classList.add('text-light'));
+                document.querySelectorAll('.table').forEach(table => table.classList.add('table-dark'));
+                document.querySelectorAll('.btn-link').forEach(link => {
+                    link.classList.add('text-light');
+                    link.classList.add('btn-secondary');
+                });
+                document.querySelectorAll('.table-primary').forEach(header => {
+                    header.classList.remove('table-primary');
+                    header.classList.add('table-dark', 'text-light');
+                });
+            }
+
             document.querySelectorAll(".reaction-btn").forEach(function (button) {
                 button.addEventListener("click", async function () {
                     const date = this.dataset.date;

@@ -3,21 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
-    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
-    <script crossorigin="anonymous"
-            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/favicon/apple-touch-icon.png}">
     <link rel="icon" sizes="32x32" th:href="@{/favicon/favicon-32x32.png}" type="image/png">
     <link rel="icon" sizes="16x16" th:href="@{/favicon/favicon-16x16.png}" type="image/png">
+    <style>
+        body.light-mode {
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .card.light-mode {
+            background-color: #ffffff;
+            border-color: #dee2e6;
+        }
+        .card.dark-mode {
+            background-color: #1e1e1e;
+            border-color: #333;
+        }
+        .card-header.light-mode {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .card-header.dark-mode {
+            background-color: #333;
+            color: #ffffff;
+        }
+        .form-control.light-mode, .form-select.light-mode {
+            background-color: #ffffff;
+            color: #212529;
+            border-color: #ced4da;
+        }
+        .form-control.dark-mode, .form-select.dark-mode {
+            background-color: #2a2a2a;
+            color: #ffffff;
+            border-color: #555;
+        }
+        .form-label.light-mode {
+            color: #212529;
+        }
+        .form-label.dark-mode {
+            color: #ffffff;
+        }
+        .btn-primary.light-mode {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary.dark-mode {
+            background-color: #1a73e8;
+            border-color: #185abc;
+        }
+        .btn-link.light-mode {
+            color: #007bff;
+        }
+        .btn-link.dark-mode {
+            color: #1a73e8;
+        }
+    </style>
 </head>
-<body>
+<body class="light-mode">
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
+            <div class="card light-mode" id="register-card">
+                <div class="card-header light-mode" id="register-card-header">
                     <h3 class="card-title">Inscription</h3>
                 </div>
                 <div class="card-body">
@@ -26,39 +79,72 @@
                     </div>
                     <form action="register" method="POST" th:object="${utilisateur}">
                         <div class="mb-3">
-                            <label class="form-label">Nom</label>
-                            <input class="form-control" th:field="*{nom}"/>
+                            <label class="form-label light-mode" id="nom-label">Nom</label>
+                            <input class="form-control light-mode" id="nom" th:field="*{nom}"/>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Prénom</label>
-                            <input class="form-control" th:field="*{prenom}"/>
+                            <label class="form-label light-mode" id="prenom-label">Prénom</label>
+                            <input class="form-control light-mode" id="prenom" th:field="*{prenom}"/>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input class="form-control" th:field="*{email}" type="email"/>
+                            <label class="form-label light-mode" id="email-label">Email</label>
+                            <input class="form-control light-mode" id="email" th:field="*{email}" type="email"/>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Mot de passe</label>
-                            <input class="form-control" th:field="*{motDePasse}" type="password"/>
+                            <label class="form-label light-mode" id="motDePasse-label">Mot de passe</label>
+                            <input class="form-control light-mode" id="motDePasse" th:field="*{motDePasse}" type="password"/>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Theme</label>
-                            <select class="form-select" th:field="*{theme}">
+                            <label class="form-label light-mode" id="theme-label">Thème</label>
+                            <select class="form-select light-mode" id="theme-select" th:field="*{theme}">
                                 <option value="light">Clair</option>
                                 <option value="dark">Sombre</option>
                             </select>
                         </div>
 
-                        <button class="btn btn-primary" type="submit">Envoyer</button>
+                        <button class="btn btn-primary light-mode" type="submit">Envoyer</button>
                     </form>
                 </div>
             </div>
 
             <div class="text-center mt-3">
-                <a class="btn btn-link" th:href="@{/login.html}">Se connecter</a>
+                <a class="btn btn-link light-mode" th:href="@{/login.html}">Se connecter</a>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('theme-select').addEventListener('change', function() {
+        const isDarkMode = this.value === 'dark';
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        document.body.classList.toggle('light-mode', !isDarkMode);
+        document.getElementById('register-card').classList.toggle('dark-mode', isDarkMode);
+        document.getElementById('register-card').classList.toggle('light-mode', !isDarkMode);
+        document.getElementById('register-card-header').classList.toggle('dark-mode', isDarkMode);
+        document.getElementById('register-card-header').classList.toggle('light-mode', !isDarkMode);
+        document.querySelectorAll('.form-control').forEach(el => {
+            el.classList.toggle('dark-mode', isDarkMode);
+            el.classList.toggle('light-mode', !isDarkMode);
+        });
+        document.querySelectorAll('.form-select').forEach(el => {
+            el.classList.toggle('dark-mode', isDarkMode);
+            el.classList.toggle('light-mode', !isDarkMode);
+        });
+        document.querySelectorAll('.form-label').forEach(el => {
+            el.classList.toggle('dark-mode', isDarkMode);
+            el.classList.toggle('light-mode', !isDarkMode);
+        });
+        document.querySelectorAll('.btn-primary').forEach(el => {
+            el.classList.toggle('dark-mode', isDarkMode);
+            el.classList.toggle('light-mode', !isDarkMode);
+        });
+        document.querySelectorAll('.btn-link').forEach(el => {
+            el.classList.toggle('dark-mode', isDarkMode);
+            el.classList.toggle('light-mode', !isDarkMode);
+        });
+
+    });
+</script>
 </body>
 </html>

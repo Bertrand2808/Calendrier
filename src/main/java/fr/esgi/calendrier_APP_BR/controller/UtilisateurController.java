@@ -44,9 +44,11 @@ public class UtilisateurController {
     @GetMapping("/")
     public String home(
             Model model,
-            @PageableDefault(size = 7) Pageable pageable
+            @PageableDefault(size = 7) Pageable pageable,
+            @AuthenticationPrincipal Utilisateur utilisateur
     ) {
         model.addAttribute("jours", jourCalendrierService.findAll(pageable));
+        model.addAttribute("theme", utilisateur.getTheme());
 
         return "index";
     }

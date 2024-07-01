@@ -85,6 +85,7 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
         utilisateur.setPrenom("test");
         utilisateur.setEmail("test@esgi.fr");
         utilisateur.setMotDePasse("test123");
+        utilisateur.setTheme("dark");
         utilisateurService.save(utilisateur);
     }
 }
