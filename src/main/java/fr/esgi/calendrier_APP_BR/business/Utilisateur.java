@@ -35,7 +35,7 @@ public class Utilisateur implements UserDetails {
     @Size(min = 3, message = "Le mot de passe doit contenir au moins 3 caractères")
     protected String motDePasse;
 
-    protected int soldePoints;
+    protected int soldePoints = 500;
 
     protected String theme;
 

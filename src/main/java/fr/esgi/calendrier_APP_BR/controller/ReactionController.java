@@ -39,6 +39,11 @@ public class ReactionController {
             JourCalendrier jourCalendrier = optionalJourCalendrier.get();
             Utilisateur utilisateur = optionalUtilisateur.get();
 
+            boolean reactionExists = reactionRepository.findByJourCalendrierAndUtilisateur(jourCalendrier, utilisateur).isPresent();
+            if (reactionExists) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Reaction already exists");
+            }
+
             Reaction reaction = new Reaction();
             reaction.setUnicode(emoji);
             reaction.setUtilisateur(utilisateur);

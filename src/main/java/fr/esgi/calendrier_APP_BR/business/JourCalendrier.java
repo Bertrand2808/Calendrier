@@ -48,4 +48,14 @@ public class JourCalendrier {
     private List<Reaction> reactions = new ArrayList<>();
 
     private int points;
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    private void initPoints() {
+        if (points == 0) {
+            Random random = new Random();
+            this.points = random.nextInt(50) + 1;
+        }
+    }
 }

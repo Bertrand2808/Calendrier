@@ -34,8 +34,6 @@ public class UtilisateurServiceImpl implements UtilisateurService {
     @Override
     public void save(Utilisateur utilisateur) {
         utilisateur.setMotDePasse(passwordEncoder.encode(utilisateur.getMotDePasse()));
-        utilisateur.setSoldePoints(500);
-
         this.utilisateurRepository.save(utilisateur);
     }
 
