@@ -7,6 +7,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
         ajoutDesReactions();
         ajoutDesJours();
         ajoutUtilisateurParDefaut();
+        nettoyerRepertoireGifs();
 
         Utilisateur utilisateur = utilisateurService.findByEmail("test@esgi.fr");
         Gif gif = gifService.findById(1L);
@@ -87,6 +92,13 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
         utilisateur.setMotDePasse("test123");
         utilisateur.setTheme("dark");
         utilisateurService.save(utilisateur);
+    }
+    private void nettoyerRepertoireGifs() throws IOException {
+        String uploadDirectory = "src/main/resources/static/gif/";
+        Files.walk(Path.of(uploadDirectory))
+                .filter(Files::isRegularFile)
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 }
 

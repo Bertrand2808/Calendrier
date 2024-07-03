@@ -17,6 +17,8 @@ public class Gif {
     @Pattern(regexp = "^.+\\.(?i)(gif)$", message = "L'URL doit se terminer par .gif, .Gif ou .GIF")
     private String url;
 
+    private String legende;
+
     @ManyToOne
     private Utilisateur utilisateur;
 }

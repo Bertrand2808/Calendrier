@@ -64,6 +64,20 @@
         .reaction-count:hover span {
             display: block;
         }
+        th.sortable:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        th.sortable::after {
+            content: ' \25B4'; /* Default to an up arrow */
+            font-size: 0.8em;
+        }
+        th.sortable.asc::after {
+            content: ' \25BE'; /* Down arrow */
+        }
+        th.sortable.desc::after {
+            content: ' \25B4'; /* Up arrow */
+        }
     </style>
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
@@ -87,6 +101,13 @@
 
             document.querySelectorAll(".reaction-btn").forEach(function (button) {
                 button.addEventListener("click", async function () {
+                    const row = this.closest('tr');
+                    const gifCell = row.querySelector('td div img');
+                    if (!gifCell) {
+                        alert('Aucun gif auquel réagir !');
+                        return;
+                    }
+
                     const date = this.dataset.date;
                     const emoji = this.dataset.emoji;
                     const utilisateurId = this.dataset.utilisateurId;
@@ -98,7 +119,25 @@
                     }
                 });
             });
+
             updateUserPoints();
+
+            document.querySelectorAll('th.sortable').forEach(header => {
+                header.addEventListener('click', () => {
+                    const table = header.parentElement.parentElement.parentElement;
+                    const rows = Array.from(table.querySelectorAll('tbody tr'));
+                    const index = Array.from(header.parentElement.children).indexOf(header);
+                    const ascending = header.classList.contains('asc');
+                    rows.sort((rowA, rowB) => {
+                        const cellA = rowA.children[index].innerText.toLowerCase();
+                        const cellB = rowB.children[index].innerText.toLowerCase();
+                        return ascending ? cellA.localeCompare(cellB) : cellB.localeCompare(cellA);
+                    });
+                    rows.forEach(row => table.querySelector('tbody').appendChild(row));
+                    header.classList.toggle('asc', !ascending);
+                    header.classList.toggle('desc', ascending);
+                });
+            });
         });
 
         async function addReaction(date, emoji, utilisateurId) {
@@ -154,7 +193,7 @@
         <h3 class="card-title">📅 Calendrier de Gif</h3>
         <div class="user-info d-flex justify-content-between align-items-center">
             <div>
-                👤 Utilisateur : <span id="user-name" th:text="${#authentication.principal.nom + ', ' + #authentication.principal.prenom}"></span>
+                Utilisateur : <span id="user-name" th:text="${#authentication.principal.nom + ', ' + #authentication.principal.prenom}"></span>
             </div>
             <div>
                 Solde : <span id="user-points" th:text="${#authentication.principal.soldePoints}"></span> points
@@ -169,10 +208,10 @@
         <table class="table table-striped table-bordered text-center mb-5">
             <thead class="table-primary">
             <tr>
-                <th scope="col">Jour</th>
-                <th scope="col">Gif</th>
-                <th scope="col">Utilisateur</th>
-                <th scope="col">Réaction(s)</th>
+                <th scope="col" class="sortable">Jour</th>
+                <th scope="col" class="sortable">Gif</th>
+                <th scope="col" class="sortable">Utilisateur</th>
+                <th scope="col" class="sortable">Réaction(s)</th>
                 <th scope="col">Actions</th>
             </tr>
             </thead>
@@ -182,12 +221,13 @@
                 <td>
                     <div th:if="${jour.gif != null}">
                         <img alt="gif" th:src="${jour.gif.url}" class="img-fluid rounded" style="max-height: 100px;">
+                        <div th:text="${jour.gif.legende}" class="mt-2"></div> <!-- Ajout de la légende -->
                     </div>
                     <div class="d-flex flex-column" th:unless="${jour.gif != null}">
                         <span th:text="'Coût: ' + ${jour.points} + ' points'" class="mb-2"></span>
                         <div>
                             <a class="btn btn-link pe-1" th:href="@{'/gif/save/form/' + ${jour.date()} }">Ajouter un gif distant</a>
-                            <a class="btn btn-link ps-1" th:href="@{'/form/gif-local/' + ${jour.date()} }">Ajouter un gif local</a>
+                            <a class="btn btn-link ps-1" th:href="@{'/gif/save/form-local/' + ${jour.date()} }">Ajouter un gif local</a>
                         </div>
                     </div>
                 </td>
