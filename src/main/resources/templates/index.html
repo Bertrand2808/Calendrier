@@ -69,14 +69,14 @@
             text-decoration: underline;
         }
         th.sortable::after {
-            content: ' \25B4'; /* Default to an up arrow */
+            content: ' \25B4';
             font-size: 0.8em;
         }
         th.sortable.asc::after {
-            content: ' \25BE'; /* Down arrow */
+            content: ' \25BE';
         }
         th.sortable.desc::after {
-            content: ' \25B4'; /* Up arrow */
+            content: ' \25B4';
         }
     </style>
     <script th:inline="javascript">
@@ -111,6 +111,12 @@
                     const date = this.dataset.date;
                     const emoji = this.dataset.emoji;
                     const utilisateurId = this.dataset.utilisateurId;
+                    const checkResponse = await fetch(`/reaction/check?date=${date}&utilisateurId=${utilisateurId}`);
+                    if (checkResponse.status === 409) {
+                        alert('Vous avez déjà réagi à ce gif');
+                        return;
+                    }
+
                     const success = await addReaction(date, emoji, utilisateurId);
                     if (success) {
                         document.querySelectorAll(`.reaction-btn[data-date="${date}"]`).forEach(function (button) {
@@ -118,6 +124,11 @@
                         });
                     }
                 });
+            });
+
+            document.querySelectorAll(".react-link").forEach(function (link) {
+                link.removeEventListener('click', checkReaction); // Remove existing listener if any
+                link.addEventListener("click", checkReaction); // Add new listener
             });
 
             updateUserPoints();
@@ -139,6 +150,34 @@
                 });
             });
         });
+
+        async function checkReaction(event) {
+            event.preventDefault(); // Prevent the default link behavior immediately
+
+            const row = this.closest('tr');
+            const gifCell = row.querySelector('td div img');
+            if (!gifCell) {
+                alert('Aucun gif auquel réagir !');
+                return;
+            }
+
+            const date = this.dataset.date;
+            const utilisateurId = this.dataset.utilisateurId;
+            try {
+                const checkResponse = await fetch(`/reaction/check?date=${date}&utilisateurId=${utilisateurId}`);
+                if (checkResponse.status === 409) {
+                    alert('Vous avez déjà réagi à ce gif');
+                } else if (checkResponse.ok) {
+                    // Handle successful check here, possibly redirect or update UI
+                    window.location.href = this.href;
+                } else {
+                    alert('Erreur lors de la vérification de la réaction');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                alert('Erreur lors de la communication avec le serveur');
+            }
+        }
 
         async function addReaction(date, emoji, utilisateurId) {
             const formData = new FormData();
@@ -166,12 +205,14 @@
                 } else {
                     console.error('Failed to fetch reactions list');
                 }
+                return true;
             } else {
                 if (addResponse.status === 409) {
                     alert('Vous avez déjà réagi à ce gif');
                 } else {
                     alert('Erreur lors de l\'ajout de la réaction');
                 }
+                return false;
             }
         }
 
@@ -249,6 +290,10 @@
                                 th:data-date="${jour.date()}" data-emoji="😡" th:data-utilisateur-id="${#authentication.principal.id}">😡</button>
                         <button class="btn btn-sm btn-outline-secondary reaction-btn btn-reaction"
                                 th:data-date="${jour.date()}" data-emoji="😭" th:data-utilisateur-id="${#authentication.principal.id}">😭</button>
+                        <a class="btn btn-sm btn-link react-link"
+                           th:href="@{'/reaction/react/' + ${jour.id.jour} + '/' + ${jour.id.mois} }"
+                           th:data-date="${jour.date()}"
+                           th:data-utilisateur-id="${#authentication.principal.id}">Réagir</a>
                     </div>
                 </td>
             </tr>

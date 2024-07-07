@@ -61,7 +61,7 @@ public class JourCalendrierServiceImpl implements JourCalendrierService {
         Optional<JourCalendrier> jourCalendrier = jourCalendrierRepository.findById(id);
         if (jourCalendrier.isPresent()) {
             JourCalendrier jour = jourCalendrier.get();
-            reaction.setJourCalendrier(jour); // Assuming Reaction has a relationship with JourCalendrier
+            reaction.setJourCalendrier(jour);
             jour.getReactions().add(reaction);
             reactionServiceImpl.save(reaction);
             jourCalendrierRepository.save(jour);

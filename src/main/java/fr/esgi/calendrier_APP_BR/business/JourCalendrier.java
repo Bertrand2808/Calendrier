@@ -38,10 +38,12 @@ public class JourCalendrier {
 
     @OneToOne()
     @Nullable()
+    @JoinColumn(name = "gif_id")
     private Gif gif;
 
     @ManyToOne()
     @Nullable()
+    @JoinColumn(name = "utilisateur_id")
     private Utilisateur utilisateur;
 
     @OneToMany(mappedBy = "jourCalendrier", cascade = CascadeType.ALL, orphanRemoval = true)

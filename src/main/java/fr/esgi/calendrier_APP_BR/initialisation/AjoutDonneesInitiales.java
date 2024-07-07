@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
 @Component
@@ -26,29 +27,17 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
     private final GifService gifService;
     private final UtilisateurService utilisateurService;
     private final ReactionJourService emotionJourService;
+    private static final Logger logger = Logger.getLogger(AjoutDonneesInitiales.class.getName());
 
     private final Random random = new Random();
 
     @Override
     public void run(String... args) throws Exception {
-        ajoutGif();
         ajoutDesReactions();
         ajoutDesJours();
         ajoutUtilisateurParDefaut();
         nettoyerRepertoireGifs();
-
-        Utilisateur utilisateur = utilisateurService.findByEmail("test@esgi.fr");
-        Gif gif = gifService.findById(1L);
-
-        JourCalendrierId jourId = new JourCalendrierId(1, 1);
-        JourCalendrier jour = new JourCalendrier();
-        jour.setId(jourId);
-        jour.setGif(gif);
-        jour.setUtilisateur(utilisateur);
-        jour.setPoints(100);
-        jourCalendrierService.save(jour);
-        Reaction reaction = reactionService.findById(1L);
-        emotionJourService.addReactionJour(jourId, reaction, utilisateur);
+        ajoutGif();
     }
 
     private void ajoutDesJours() {
@@ -79,20 +68,59 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
     }
 
     private void ajoutGif() {
-        Gif gif = new Gif();
-        gif.setUrl("https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnNyMWlxZ3EzdDV4ZW5qaHgxZzRpb3V5dGRxbmZ2bWsxeGwxdGwxOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Wck09E7lHDabjhHbzJ/giphy.gif");
-        gifService.save(gif);
+        try {
+            // Assurez-vous que l'utilisateur par défaut existe
+            Utilisateur utilisateur = utilisateurService.findByEmail("test@esgi.fr");
+            if (utilisateur == null) {
+                utilisateur = new Utilisateur();
+                utilisateur.setNom("test");
+                utilisateur.setPrenom("test");
+                utilisateur.setEmail("test@esgi.fr");
+                utilisateur.setMotDePasse("test123");
+                utilisateur.setTheme("light");
+                utilisateurService.save(utilisateur);
+                utilisateur = utilisateurService.findByEmail("test@esgi.fr");
+            }
+
+            // Obtenir le mois en cours
+            int moisEnCours = LocalDate.now().getMonthValue();
+            JourCalendrierId jourId = new JourCalendrierId(1, moisEnCours);
+
+            // Rechercher le jour du calendrier correspondant
+            JourCalendrier jour = jourCalendrierService.findById(jourId);
+            if (jour != null) {
+                // Créer le GIF avec l'URL et la légende
+                Gif gif = new Gif();
+                gif.setUrl("https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnNyMWlxZ3EzdDV4ZW5qaHgxZzRpb3V5dGRxbmZ2bWsxeGwxdGwxOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Wck09E7lHDabjhHbzJ/giphy.gif");
+                gif.setLegende("C class be like..");
+                gifService.save(gif);
+
+                // Associer le GIF au jour du calendrier
+                jourCalendrierService.setGif(jourId, gif);
+                jourCalendrierService.setUtilisateur(jourId, utilisateur);
+                jourCalendrierService.save(jour);
+                logger.info("GIF ajouté avec succès à la date " + jourId);
+            } else {
+                logger.warning("Jour du calendrier non trouvé pour la date " + jourId);
+            }
+        } catch (Exception e) {
+            logger.severe("Erreur lors de l'ajout du GIF : " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void ajoutUtilisateurParDefaut() {
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setNom("test");
-        utilisateur.setPrenom("test");
-        utilisateur.setEmail("test@esgi.fr");
-        utilisateur.setMotDePasse("test123");
-        utilisateur.setTheme("dark");
-        utilisateurService.save(utilisateur);
+        if (utilisateurService.findByEmail("test@esgi.fr") == null) {
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur.setNom("test");
+            utilisateur.setPrenom("test");
+            utilisateur.setEmail("test@esgi.fr");
+            utilisateur.setMotDePasse("test123");
+            utilisateur.setTheme("light");
+            utilisateurService.save(utilisateur);
+        }
     }
+
     private void nettoyerRepertoireGifs() throws IOException {
         String uploadDirectory = "src/main/resources/static/gif/";
         Files.walk(Path.of(uploadDirectory))
@@ -101,4 +129,3 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
                 .forEach(File::delete);
     }
 }
-
