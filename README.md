@@ -74,10 +74,11 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
 
 ### Page de connexion 
 
+
 ![img_1.png](img_1.png)
 
-### Page d'inscription
 
+### Page d'inscription
 ![img_2.png](img_2.png)
 
 ### Calendrier
