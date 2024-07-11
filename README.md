@@ -64,7 +64,7 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
     - **Ajouter un GIF local :** Cliquez sur `Ajouter un gif local`, téléchargez le GIF depuis votre ordinateur et ajoutez une description.
 
 3. **Réagir aux GIFs**
-    - Cliquez sur un GIF dans le calendrier pour ajouter une réaction (ex : like, commentaire, etc.).
+    - Cliquez sur le bouton `Réagir` pour réagir aux GIFs dans le calendrier. A noter que vous pouvez aussi réagir "rapidement" en cliquant sur les emojis en face de chaque GIF.
 
 ## Diagramme de Classes
 
@@ -96,3 +96,9 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
 
 ### Réactions aux GIFs
 
+![img_7.png](img_7.png)
+![img_8.png](img_8.png)
+
+Exemple si on post un gif avec l'utilisateur test et qu'on réagit avec un autre utilisateur : 
+
+![img_9.png](img_9.png)

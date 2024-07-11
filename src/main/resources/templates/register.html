@@ -8,112 +8,102 @@
     <link rel="apple-touch-icon" sizes="180x180" th:href="@{/favicon/apple-touch-icon.png}">
     <link rel="icon" sizes="32x32" th:href="@{/favicon/favicon-32x32.png}" type="image/png">
     <link rel="icon" sizes="16x16" th:href="@{/favicon/favicon-16x16.png}" type="image/png">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        body.light-mode {
-            background-color: #f8f9fa;
-            color: #212529;
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(135deg, #1d2b64, #f8cdda);
+            font-family: Arial, sans-serif;
         }
-        body.dark-mode {
-            background-color: #121212;
-            color: #ffffff;
+        .register-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
         }
-        .card.light-mode {
-            background-color: #ffffff;
-            border-color: #dee2e6;
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
-        .card.dark-mode {
-            background-color: #1e1e1e;
-            border-color: #333;
+        .card-header {
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: white;
+            text-align: center;
         }
-        .card-header.light-mode {
-            background-color: #007bff;
-            color: #ffffff;
+        .form-control, .form-select {
+            border-radius: 30px;
+            padding-left: 40px;
         }
-        .card-header.dark-mode {
-            background-color: #333;
-            color: #ffffff;
+        .input-group-text {
+            border-radius: 30px 0 0 30px;
+            background: transparent;
+            border: none;
+            color: #6b73ff;
         }
-        .form-control.light-mode, .form-select.light-mode {
-            background-color: #ffffff;
-            color: #212529;
-            border-color: #ced4da;
+        .btn-primary {
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            border: none;
+            border-radius: 30px;
+            transition: background 0.3s ease-in-out;
         }
-        .form-control.dark-mode, .form-select.dark-mode {
-            background-color: #2a2a2a;
-            color: #ffffff;
-            border-color: #555;
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #000dff, #6b73ff);
         }
-        .form-label.light-mode {
-            color: #212529;
+        .btn-link {
+            color: #6b73ff;
         }
-        .form-label.dark-mode {
-            color: #ffffff;
-        }
-        .btn-primary.light-mode {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-        .btn-primary.dark-mode {
-            background-color: #1a73e8;
-            border-color: #185abc;
-        }
-        .btn-link.light-mode {
-            color: #007bff;
-        }
-        .btn-link.dark-mode {
-            color: #1a73e8;
+        .btn-link:hover {
+            color: #000dff;
         }
     </style>
 </head>
-<body class="light-mode">
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card light-mode" id="register-card">
-                <div class="card-header light-mode" id="register-card-header">
-                    <h3 class="card-title">Inscription</h3>
+<body>
+<div class="register-container">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Inscription</h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success" role="alert" th:if="${param.success}">
+                    Inscription réussie. Vous pouvez maintenant vous <a th:href="@{/login.html}">connecter</a>.
                 </div>
-                <div class="card-body">
-                    <div class="alert alert-success" role="alert" th:if="${param.success}">
-                        Inscription réussie. Vous pouvez maintenant vous <a th:href="@{/login.html}">connecter</a>.
+                <form action="register" method="POST" th:object="${utilisateur}">
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input class="form-control" name="nom" th:field="*{nom}" placeholder="Nom" required />
                     </div>
-                    <form action="register" method="POST" th:object="${utilisateur}">
-                        <div class="mb-3">
-                            <label class="form-label light-mode" id="nom-label">Nom</label>
-                            <input class="form-control light-mode" id="nom" th:field="*{nom}"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label light-mode" id="prenom-label">Prénom</label>
-                            <input class="form-control light-mode" id="prenom" th:field="*{prenom}"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label light-mode" id="email-label">Email</label>
-                            <input class="form-control light-mode" id="email" th:field="*{email}" type="email"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label light-mode" id="motDePasse-label">Mot de passe</label>
-                            <input class="form-control light-mode" id="motDePasse" th:field="*{motDePasse}" type="password"/>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label light-mode" id="theme-label">Thème</label>
-                            <select class="form-select light-mode" id="theme-select" th:field="*{theme}">
-                                <option value="light">Clair</option>
-                                <option value="dark">Sombre</option>
-                            </select>
-                        </div>
-
-                        <button class="btn btn-primary light-mode" type="submit">Envoyer</button>
-                    </form>
-                </div>
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input class="form-control" name="prenom" th:field="*{prenom}" placeholder="Prénom" required />
+                    </div>
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                        <input class="form-control" name="email" th:field="*{email}" type="email" placeholder="Email" required />
+                    </div>
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input class="form-control" name="motDePasse" th:field="*{motDePasse}" type="password" placeholder="Mot de passe" required />
+                    </div>
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="bi bi-palette-fill"></i></span>
+                        <select class="form-select" name="theme" th:field="*{theme}" required>
+                            <option value="light">Clair</option>
+                            <option value="dark">Sombre</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary w-100" type="submit">Envoyer</button>
+                </form>
             </div>
-
-            <div class="text-center mt-3">
-                <a class="btn btn-link light-mode" th:href="@{/login.html}">Se connecter</a>
-            </div>
+        </div>
+        <div class="text-center mt-3">
+            <a class="btn btn-link" th:href="@{/login.html}">Se connecter</a>
         </div>
     </div>
 </div>
-
 <script>
     document.getElementById('theme-select').addEventListener('change', function() {
         const isDarkMode = this.value === 'dark';
@@ -131,6 +121,10 @@
             el.classList.toggle('dark-mode', isDarkMode);
             el.classList.toggle('light-mode', !isDarkMode);
         });
+        document.querySelectorAll('.input-group-text').forEach(el => {
+            el.classList.toggle('dark-mode', isDarkMode);
+            el.classList.toggle('light-mode', !isDarkMode);
+        });
         document.querySelectorAll('.form-label').forEach(el => {
             el.classList.toggle('dark-mode', isDarkMode);
             el.classList.toggle('light-mode', !isDarkMode);
@@ -143,7 +137,6 @@
             el.classList.toggle('dark-mode', isDarkMode);
             el.classList.toggle('light-mode', !isDarkMode);
         });
-
     });
 </script>
 </body>

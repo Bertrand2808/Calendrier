@@ -6,6 +6,7 @@ import fr.esgi.calendrier_APP_BR.service.*;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,7 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
 
     private final Random random = new Random();
 
+    @Transactional
     @Override
     public void run(String... args) throws Exception {
         ajoutDesReactions();
@@ -69,7 +71,6 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
 
     private void ajoutGif() {
         try {
-            // Assurez-vous que l'utilisateur par défaut existe
             Utilisateur utilisateur = utilisateurService.findByEmail("test@esgi.fr");
             if (utilisateur == null) {
                 utilisateur = new Utilisateur();
@@ -81,18 +82,14 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
                 utilisateurService.save(utilisateur);
                 utilisateur = utilisateurService.findByEmail("test@esgi.fr");
             }
-
-            // Obtenir le mois en cours
             int moisEnCours = LocalDate.now().getMonthValue();
             JourCalendrierId jourId = new JourCalendrierId(1, moisEnCours);
-
-            // Rechercher le jour du calendrier correspondant
             JourCalendrier jour = jourCalendrierService.findById(jourId);
             if (jour != null) {
-                // Créer le GIF avec l'URL et la légende
                 Gif gif = new Gif();
                 gif.setUrl("https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnNyMWlxZ3EzdDV4ZW5qaHgxZzRpb3V5dGRxbmZ2bWsxeGwxdGwxOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Wck09E7lHDabjhHbzJ/giphy.gif");
                 gif.setLegende("C class be like..");
+                gif.setUtilisateur(utilisateur);
                 gifService.save(gif);
 
                 // Associer le GIF au jour du calendrier
