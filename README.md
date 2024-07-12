@@ -70,45 +70,45 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
 
 ### Diagramme de Classes
 
-![img_10.png](img_10.png)
+![img_10.png](doc/img/img_10.png)
 
 ### Diagramme des controllers
 
-![img_11.png](img_11.png)
+![img_11.png](doc/img/img_11.png)
 
 ### Diagramme des services
 
-![img_12.png](img_12.png)
+![img_12.png](doc/img/img_12.png)
 
 ## Interfaces Utilisateur 
 
 ### Page de connexion 
 
 
-![img_1.png](img_1.png)
+![img_1.png](doc/img/img_1.png)
 
 
 ### Page d'inscription
-![img_2.png](img_2.png)
+![img_2.png](doc/img/img_2.png)
 
 ### Calendrier
 - Thème clair
-![img_3.png](img_3.png)
+![img_3.png](doc/img/img_3.png)
 - Thème sombre
-![img_4.png](img_4.png)
+![img_4.png](doc/img/img_4.png)
 
 ### Ajout de GIFs distants
-![img_16.png](img_16.png)
-![img_13.png](img_13.png)
+![img_16.png](doc/img/img_16.png)
+![img_13.png](doc/img/img_13.png)
 
 ### Ajout de GIFs locaux
-![img_17.png](img_17.png)
-![img_14.png](img_14.png)
+![img_17.png](doc/img/img_17.png)
+![img_14.png](doc/img/img_14.png)
 ### Réactions aux GIFs
-![img_15.png](img_15.png)
-![img_7.png](img_7.png)
-![img_8.png](img_8.png)
+![img_15.png](doc/img/img_15.png)
+![img_7.png](doc/img/img_7.png)
+![img_8.png](doc/img/img_8.png)
 
 Exemple si on post un gif avec l'utilisateur test et qu'on réagit avec un autre utilisateur : 
 
-![img_9.png](img_9.png)
+![img_9.png](doc/img/img_9.png)
