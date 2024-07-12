@@ -10,7 +10,7 @@
 <div class="container mt-5">
     <div class="alert alert-danger" role="alert">
         <h4 class="alert-heading">Erreur!</h4>
-        <p>Une erreur inattendue s'est produite. Veuillez réessayer plus tard.</p>
+        <p th:if="${errorMessage}" th:text="${errorMessage}">Une erreur inattendue s'est produite. Veuillez réessayer plus tard.</p>
     </div>
 </div>
 </body>

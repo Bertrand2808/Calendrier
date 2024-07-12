@@ -19,11 +19,11 @@ public class Utilisateur implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
-    @NotBlank
-    protected String nom;
+    @NotBlank(message = "Nom requis")
+    private String nom;
 
-    @NotBlank
-    protected String prenom;
+    @NotBlank(message = "Prénom requis")
+    private String prenom;
 
     @Email
     @NotNull
