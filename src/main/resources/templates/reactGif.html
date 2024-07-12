@@ -13,40 +13,47 @@
             background-color: rgba(18, 18, 18, 0.6);
             color: #ffffff;
         }
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
+        .container.dark-mode {
+            background-color: #1e1e1e;
+            color: #ffffff;
         }
-        .container {
-            background: #fff;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
+        .form-label.dark-mode, .card-title.dark-mode {
+            color: #ffffff;
         }
-        .card-title {
-            font-size: 28px;
-            font-weight: bold;
-            margin-bottom: 30px;
-            color: #343a40;
+        .form-select.dark-mode, .form-control.dark-mode {
+            background-color: #2a2a2a;
+            color: #ffffff;
+            border-color: #555;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            border: none;
-            width: 100%;
+        .btn-primary.dark-mode {
+            background: linear-gradient(135deg, #1a73e8, #185abc);
+            border-color: #185abc;
         }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #0056b3, #004080);
+        .btn-link.dark-mode {
+            color: #1a73e8;
         }
-        .form-label {
-            font-weight: bold;
+        .form-select.light-mode, .form-control.light-mode {
+            background-color: #ffffff;
+            color: #212529;
+            border-color: #ced4da;
         }
     </style>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function () {
+            const userTheme = /*[[${#authentication.principal.theme}]]*/ 'default';
+            if (userTheme === 'dark') {
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                document.body.classList.add('dark-mode');
+                document.querySelector('.container').classList.add('dark-mode');
+                document.querySelector('.card-title').classList.add('dark-mode');
+                document.querySelectorAll('.form-label').forEach(element => element.classList.add('dark-mode'));
+                document.querySelectorAll('.form-select').forEach(element => element.classList.add('dark-mode'));
+                document.querySelectorAll('.form-control').forEach(element => element.classList.add('dark-mode'));
+                document.querySelectorAll('.btn-primary').forEach(element => element.classList.add('dark-mode'));
+                document.querySelectorAll('.btn-link').forEach(element => element.classList.add('dark-mode'));
+            }
+        });
+    </script>
 </head>
 <body>
 <div class="container mt-5">

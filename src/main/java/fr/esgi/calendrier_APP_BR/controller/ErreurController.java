@@ -19,7 +19,7 @@ public class ErreurController implements ErrorController {
 
     @RequestMapping("/error")
     public String handleError() {
-        return "error"; // Return the name of your error view
+        return "error";
     }
 
 }

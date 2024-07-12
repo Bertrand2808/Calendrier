@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/register").permitAll()
-                        .requestMatchers("/reaction/**").permitAll()
+                        .requestMatchers("/reaction/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers

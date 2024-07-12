@@ -9,6 +9,59 @@
     <link rel="icon" sizes="32x32" th:href="@{/favicon/favicon-32x32.png}" type="image/png">
     <link rel="icon" sizes="16x16" th:href="@{/favicon/favicon-16x16.png}" type="image/png">
     <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            background: linear-gradient(135deg, #1d2b64, #f8cdda);
+            font-family: Arial, sans-serif;
+        }
+        .upload-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            color: white;
+            text-align: center;
+        }
+        .form-control {
+            border-radius: 30px;
+            padding-left: 20px;
+        }
+        .input-group-text {
+            border-radius: 30px 0 0 30px;
+            background: transparent;
+            border: none;
+            color: #6b73ff;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6b73ff, #000dff);
+            border: none;
+            border-radius: 30px;
+            transition: background 0.3s ease-in-out;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #000dff, #6b73ff);
+        }
+        .btn-secondary {
+            border: none;
+            border-radius: 30px;
+            width: 100%;
+        }
+        .btn-link {
+            color: #6b73ff;
+        }
+        .btn-link:hover {
+            color: #000dff;
+        }
         html.dark-mode, body.dark-mode {
             background-color: rgba(18, 18, 18, 0.6);
             color: #ffffff;
@@ -20,82 +73,71 @@
         .card-title.dark-mode, .form-label.dark-mode {
             color: #ffffff;
         }
-        .container {
-            background: #fff;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            width: 100%;
-        }
-        .card-title {
-            font-size: 24px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .form-label {
-            font-weight: bold;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            border: none;
-            width: 100%;
-        }
-        .btn-secondary {
-            border: none;
-            width: 100%;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #0056b3, #004080);
-        }
-        body.dark-mode {
-            background-color: #121212;
+        .form-control.dark-mode {
+            background-color: #2a2a2a;
             color: #ffffff;
+            border-color: #555;
         }
-        .container.dark-mode {
-            background-color: #1e1e1e;
-            border-color: #333;
+        .btn-primary.dark-mode {
+            background: linear-gradient(135deg, #1a73e8, #185abc);
+            border-color: #185abc;
         }
-        .card-title.dark-mode, .form-label.dark-mode {
+        .btn-link.dark-mode {
+            color: #1a73e8;
+        }
+        .form-select.dark-mode {
+            background-color: #2a2a2a;
             color: #ffffff;
+            border-color: #555;
+        }
+        .form-select.light-mode, .form-control.light-mode {
+            background-color: #ffffff;
+            color: #212529;
+            border-color: #ced4da;
         }
     </style>
     <script th:inline="javascript">
         document.addEventListener("DOMContentLoaded", function () {
             const userTheme = /*[[${#authentication.principal.theme}]]*/ 'default';
             if (userTheme === 'dark') {
-                document.documentElement.setAttribute('data-bs-theme', 'dark'); // Ajout de cette ligne
-                document.documentElement.classList.add('dark-mode'); // Ajout de cette ligne
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
+                document.documentElement.classList.add('dark-mode');
                 document.body.classList.add('dark-mode');
                 document.querySelector('.container').classList.add('dark-mode');
                 document.querySelector('.card-title').classList.add('dark-mode');
                 document.querySelectorAll('.form-label').forEach(label => label.classList.add('dark-mode'));
-                document.querySelectorAll('.btn').forEach(link => {
-                    link.classList.remove('btn-primary')
-                    link.classList.add('btn-secondary');
-                });
+                document.querySelectorAll('.form-control').forEach(control => control.classList.add('dark-mode'));
+                document.querySelectorAll('.btn-primary').forEach(button => button.classList.add('dark-mode'));
+                document.querySelectorAll('.btn-link').forEach(link => link.classList.add('dark-mode'));
             }
         });
     </script>
 </head>
 <body>
-<div class="container mt-5">
-    <h3 class="card-title" th:text="'Placer un gif distant pour le ' + ${jour.date()}"></h3>
-
-    <div class="row mt-4">
-        <form method="post" th:action="@{'/gif/save/form/' + ${jour.date()}}">
-            <div class="mb-3">
-                <label class="form-label">URL du gif</label>
-                <input class="form-control" name="url" required type="text"/>
+<div class="upload-container">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title" th:text="'Placer un gif distant pour le ' + ${jour.date()}"></h3>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Légende</label>
-                <input class="form-control" name="legende" required type="text"/>
+            <div class="card-body">
+                <form method="post" th:action="@{'/gif/save/form/' + ${jour.date()}}">
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+                        <input class="form-control" name="url" required type="text" placeholder="URL du gif"/>
+                    </div>
+                    <div class="mb-3 input-group">
+                        <span class="input-group-text"><i class="bi bi-chat-text"></i></span>
+                        <input class="form-control" name="legende" required type="text" placeholder="Légende"/>
+                    </div>
+                    <input name="date" th:value="${jour.date()}" type="hidden"/>
+                    <button class="btn btn-primary w-100" type="submit">Ajouter</button>
+                </form>
             </div>
-            <input name="date" th:value="${jour.date()}" type="hidden"/>
-            <button class="btn btn-primary" type="submit">Ajouter</button>
-        </form>
+        </div>
     </div>
 </div>
+<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </body>
 </html>

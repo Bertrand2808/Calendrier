@@ -47,7 +47,7 @@ public class UtilisateurServiceImplTest {
     public void save() {
         Utilisateur utilisateur = new Utilisateur();
         utilisateur.setId(1L);
-        utilisateur.setMotDePasse("password"); // Set a password
+        utilisateur.setMotDePasse("password");
         when(utilisateurRepository.save(utilisateur)).thenReturn(utilisateur);
 
         utilisateurService.save(utilisateur);

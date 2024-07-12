@@ -27,7 +27,6 @@ public class AjoutDonneesInitiales implements CommandLineRunner {
     private final ReactionService reactionService;
     private final GifService gifService;
     private final UtilisateurService utilisateurService;
-    private final ReactionJourService emotionJourService;
     private static final Logger logger = Logger.getLogger(AjoutDonneesInitiales.class.getName());
 
     private final Random random = new Random();

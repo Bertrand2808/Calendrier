@@ -66,9 +66,19 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
 3. **Réagir aux GIFs**
     - Cliquez sur le bouton `Réagir` pour réagir aux GIFs dans le calendrier. A noter que vous pouvez aussi réagir "rapidement" en cliquant sur les emojis en face de chaque GIF.
 
-## Diagramme de Classes
+## Diagrammes
 
-![img.png](img.png)
+### Diagramme de Classes
+
+![img_10.png](img_10.png)
+
+### Diagramme des controllers
+
+![img_11.png](img_11.png)
+
+### Diagramme des services
+
+![img_12.png](img_12.png)
 
 ## Interfaces Utilisateur 
 
@@ -88,15 +98,14 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
 ![img_4.png](img_4.png)
 
 ### Ajout de GIFs distants
-
-![img_5.png](img_5.png)
+![img_16.png](img_16.png)
+![img_13.png](img_13.png)
 
 ### Ajout de GIFs locaux
-
-![img_6.png](img_6.png)
-
+![img_17.png](img_17.png)
+![img_14.png](img_14.png)
 ### Réactions aux GIFs
-
+![img_15.png](img_15.png)
 ![img_7.png](img_7.png)
 ![img_8.png](img_8.png)
 
