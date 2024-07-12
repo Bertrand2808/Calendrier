@@ -9,7 +9,7 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
     - Les utilisateurs peuvent créer un compte et se connecter pour accéder à leurs calendriers personnalisés.
 
 2. **Affichage du Calendrier**
-    - Voir les jours du mois en cours avec la possibilité de naviguer vers les mois précédents et suivants.
+    - Voir les jours du mois en cours avec la possibilité de naviguer vers les semaines précédentes et suivantes.
 
 3. **Ajout de GIFs**
     - Ajouter des GIFs à partir d'une URL distante avec une description.
@@ -57,7 +57,7 @@ Ce projet est une application de calendrier développée en utilisant Java, Mave
 ### Gestion du Calendrier
 
 1. **Affichage du Calendrier**
-    - Une fois connecté, le calendrier du mois en cours s'affiche par défaut. Vous pouvez naviguer entre les mois pour voir les jours précédents et suivants.
+    - Une fois connecté, le calendrier du mois en cours s'affiche par défaut. Vous pouvez naviguer entre les semaines pour voir les jours précédents et suivants.
 
 2. **Ajout de GIFs**
     - **Ajouter un GIF distant :** Cliquez sur `Ajouter un gif distant` et entrez l'URL du GIF et sa description.
