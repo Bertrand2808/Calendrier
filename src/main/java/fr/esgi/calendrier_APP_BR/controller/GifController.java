@@ -7,7 +7,6 @@ import fr.esgi.calendrier_APP_BR.business.customId.JourCalendrierId;
 import fr.esgi.calendrier_APP_BR.service.GifService;
 import fr.esgi.calendrier_APP_BR.service.JourCalendrierService;
 import fr.esgi.calendrier_APP_BR.service.UtilisateurService;
-import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -21,7 +20,7 @@ import java.nio.file.Path;
 import java.util.logging.Logger;
 
 
-@Api(tags = "Gif")
+
 @Controller
 @AllArgsConstructor
 public class GifController {

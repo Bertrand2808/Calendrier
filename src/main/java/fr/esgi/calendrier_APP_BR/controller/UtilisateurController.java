@@ -5,7 +5,6 @@ import fr.esgi.calendrier_APP_BR.dto.UtilisateurDto;
 import fr.esgi.calendrier_APP_BR.mapper.UtilisateurMapper;
 import fr.esgi.calendrier_APP_BR.service.JourCalendrierService;
 import fr.esgi.calendrier_APP_BR.service.UtilisateurService;
-import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Api(tags = "Utilisateur")
 @Controller
 @AllArgsConstructor
 public class UtilisateurController {
