@@ -19,7 +19,7 @@ public class ErreurController implements ErrorController {
         StringBuilder errorMessage = new StringBuilder("Erreurs de validation: ");
 
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
-            errorMessage.append(error.getField()).append(": ").append(error.getDefaultMessage()).append("; ");
+            errorMessage.append(error.getDefaultMessage());
         }
 
         modelAndView.addObject("errorMessage", errorMessage.toString());
@@ -33,7 +33,7 @@ public class ErreurController implements ErrorController {
         StringBuilder errorMessage = new StringBuilder("Erreurs de validation: ");
 
         for (ConstraintViolation<?> violation : ex.getConstraintViolations()) {
-            errorMessage.append(violation.getPropertyPath()).append(": ").append(violation.getMessage()).append("; ");
+            errorMessage.append(violation.getMessage());
         }
 
         modelAndView.addObject("errorMessage", errorMessage.toString());

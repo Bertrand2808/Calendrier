@@ -33,7 +33,7 @@ build/
 .vscode/
 
 #logs application
-/log/calendrier_APP_BR_logs
+log/calendrier_APP_BR_logs
 
 
 
